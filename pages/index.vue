@@ -1,12 +1,14 @@
 <template>
-  <UContainer>
+  <UContainer
+    :ui="{
+      constrained: 'max-w-2xl',
+    }">
     <!-- Navbar -->
     <TheNavbar />
     <!-- Logo and Create Post Button -->
 
     <!-- List of Posts -->
-
-    Home Page
+    <Posts />
   </UContainer>
 </template>
 
