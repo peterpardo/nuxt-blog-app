@@ -1,13 +1,19 @@
 <template>
   <div class="mt-2 space-y-5">
-    <Post
-      v-for="post in posts"
-      :post="post"
-      :key="post.id" />
+    <PostSkeleton v-if="postStore.loading" />
+
+    <template v-else>
+      <Post
+        v-for="post in postStore.list"
+        :post="post"
+        :key="post.id" />
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
+  const postStore = usePostStore();
+
   const posts = ref([
     {
       id: 1,
@@ -55,4 +61,6 @@
       ],
     },
   ]);
+
+  postStore.fetchPosts();
 </script>
