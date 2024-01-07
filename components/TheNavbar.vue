@@ -1,6 +1,15 @@
 <template>
-  <nav class="flex items-center justify-between py-4">
-    <div class="font-semibold text-primary">Coffee</div>
+  <nav
+    class="sticky top-0 z-10 bg-white bg-opacity-80 flex items-center justify-between py-4">
+    <div
+      class="flex items-center gap-x-2 font-semibold text-primary cursor-pointer"
+      @click="scrollToTop">
+      <UIcon
+        name="i-material-symbols-note-alt"
+        class="text-2xl"
+        dynamic />
+      <h1>Le Bloge</h1>
+    </div>
 
     <div>
       <UButton @click="isOpen = !isOpen">Create Post</UButton>
@@ -52,5 +61,9 @@
     post.value = "";
     isOpen.value = false;
     toast.add({ title: "Post created." });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 </script>

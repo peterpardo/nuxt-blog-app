@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-5">
+  <div class="mt-2 space-y-5">
     <Post
       v-for="post in posts"
       :post="post"
