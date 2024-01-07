@@ -1,6 +1,6 @@
 <template>
   <nav class="flex items-center justify-between py-4">
-    <div class="font-semibold text-amber-900">Coffee</div>
+    <div class="font-semibold text-primary">Coffee</div>
 
     <div>
       <UButton @click="isOpen = !isOpen">Create Post</UButton>
@@ -9,7 +9,9 @@
 
   <UModal v-model="isOpen">
     <UCard>
-      <template #header> Create Post </template>
+      <template #header>
+        <h1 class="text-xl text-primary font-semibold">Create Post</h1>
+      </template>
 
       <UFormGroup
         label="What is on your mind?"
@@ -23,8 +25,10 @@
       <template #footer>
         <div class="flex">
           <UButton
+            :disabled="!isPostValid"
             class="ml-auto"
             @click="createPost"
+            :variant="!isPostValid ? 'outline' : 'solid'"
             >Post</UButton
           >
         </div>
@@ -38,8 +42,10 @@
   const post = ref("");
   const toast = useToast();
 
+  const isPostValid = computed(() => post.value.length < 20);
+
   const errorMessage = computed(
-    () => post.value.length > 20 && "Post must be 20 characters below."
+    () => !isPostValid.value && "Post must be 20 characters below."
   );
 
   const createPost = () => {
