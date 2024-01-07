@@ -1,11 +1,13 @@
 <template>
-    <div>
-        <h1 class="text-3xl font-semibold">
-            Home Page
-        </h1>
-    </div>
+  <UContainer>
+    <!-- Navbar -->
+    <TheNavbar />
+    <!-- Logo and Create Post Button -->
+
+    <!-- List of Posts -->
+
+    Home Page
+  </UContainer>
 </template>
 
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
