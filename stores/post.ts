@@ -1,8 +1,8 @@
 import type { Post } from "~/types";
+import posts from "~/data/posts.json";
 
 type PostState = {
-  //   list: Post[];
-  list: any;
+  list: Post[];
   currentPost: Post | null;
   loading?: boolean;
 };
@@ -12,10 +12,8 @@ export const usePostStore = defineStore("post", {
   actions: {
     async fetchPosts() {
       this.loading = true;
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/posts"
-      );
-      this.list = await response.json();
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      this.list = posts;
       this.loading = false;
     },
   },
