@@ -70,7 +70,9 @@
 </template>
 
 <script setup lang="ts">
-  const user = useSupabaseUser();
+  import type { User } from "@supabase/supabase-js";
+
+  const user = ref<User | null>(null);
   const supabase = useSupabaseClient();
   const isOpen = ref(false);
   const post = ref("");
@@ -99,6 +101,11 @@
     ],
   ];
 
+  onMounted(() => {
+    const currentUser = useSupabaseUser();
+    user.value = currentUser.value;
+  });
+
   const createPost = () => {
     post.value = "";
     isOpen.value = false;
@@ -111,6 +118,7 @@
 
   async function signOut() {
     const { error } = await supabase.auth.signOut();
+    user.value = null;
     if (error) console.log(error);
   }
 </script>
