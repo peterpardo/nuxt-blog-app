@@ -1,20 +1,41 @@
 <template>
   <nav
     class="sticky top-0 z-10 bg-white bg-opacity-80 flex items-center justify-between py-4">
-    <TheLogo @click="scrollToTop" />
-
-    <div>
+    <div class="flex items-center gap-x-2">
+      <TheLogo @click="scrollToTop" />
       <UButton
         v-if="user"
         @click="isOpen = !isOpen"
         >Create Post</UButton
       >
-      <UButton
-        v-else
-        variant="ghost"
-        to="/login"
-        >Login</UButton
-      >
+    </div>
+    <div>
+      <div class="flex items-center">
+        <UButton
+          v-if="!user"
+          variant="ghost"
+          to="/login"
+          >Login</UButton
+        >
+        <UDropdown
+          v-else
+          :items="items"
+          :ui="{ item: { disabled: 'cursor-text select-text' } }">
+          <template #account="{ item }">
+            <div class="text-left">
+              <p>Signed in as</p>
+              <p class="truncate font-medium text-gray-900 dark:text-white">
+                {{ item.label }}
+              </p>
+            </div>
+          </template>
+          <UAvatar
+            :src="user?.user_metadata.avatar_url"
+            :alt="user?.user_metadata.user_name"
+            size="md"
+            class="cursor-pointer" />
+        </UDropdown>
+      </div>
     </div>
   </nav>
 
@@ -50,6 +71,7 @@
 
 <script setup lang="ts">
   const user = useSupabaseUser();
+  const supabase = useSupabaseClient();
   const isOpen = ref(false);
   const post = ref("");
   const toast = useToast();
@@ -60,6 +82,23 @@
     () => !isPostValid.value && "Post must be 20 characters below."
   );
 
+  const items = [
+    [
+      {
+        label: user?.value?.email as string,
+        slot: "account",
+        disabled: true,
+      },
+    ],
+    [
+      {
+        label: "Sign out",
+        icon: "i-heroicons-arrow-left-on-rectangle",
+        click: signOut,
+      },
+    ],
+  ];
+
   const createPost = () => {
     post.value = "";
     isOpen.value = false;
@@ -69,4 +108,9 @@
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  async function signOut() {
+    const { error } = await supabase.auth.signOut();
+    if (error) console.log(error);
+  }
 </script>
