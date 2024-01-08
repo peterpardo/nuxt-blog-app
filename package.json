@@ -10,12 +10,15 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
+    "@nuxtjs/supabase": "^1.1.5",
     "nuxt": "^3.9.0",
+    "prisma": "^5.7.1",
     "vue": "^3.4.5",
     "vue-router": "^4.2.5"
   },
   "dependencies": {
     "@nuxt/ui": "^2.11.1",
-    "@pinia/nuxt": "^0.5.1"
+    "@pinia/nuxt": "^0.5.1",
+    "@prisma/client": "^5.7.1"
   }
 }
