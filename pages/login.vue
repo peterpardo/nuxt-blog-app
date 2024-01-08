@@ -26,6 +26,10 @@
 </template>
 
 <script setup lang="ts">
+  definePageMeta({
+    middleware: "authenticated",
+  });
+
   const supabase = useSupabaseClient();
   const config = useRuntimeConfig();
 
