@@ -1,3 +1,5 @@
+import type { Ref } from "vue";
+
 export type Post = {
   id: number;
   user: {
@@ -7,4 +9,9 @@ export type Post = {
   };
   content: string;
   images: string[];
+};
+
+export type Modal = {
+  isOpen: Ref<boolean>;
+  handleIsOpen: (value: boolean) => void;
 };

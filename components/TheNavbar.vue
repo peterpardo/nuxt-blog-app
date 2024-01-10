@@ -39,13 +39,12 @@
     </div>
   </nav>
 
-  <CreatePostModal
-    :isOpen="isOpen"
-    @handle-modal="handleModal" />
+  <CreatePostModal />
 </template>
 
 <script setup lang="ts">
   import type { User } from "@supabase/supabase-js";
+  import { ModalKey } from "~/symbols";
 
   const user = ref<User | null>(null);
   const supabase = useSupabaseClient();
@@ -73,7 +72,7 @@
     user.value = currentUser.value;
   });
 
-  const handleModal = (value: boolean) => {
+  const handleIsOpen = (value: boolean) => {
     isOpen.value = value;
   };
 
@@ -86,4 +85,9 @@
     user.value = null;
     if (error) console.log(error);
   }
+
+  provide(ModalKey, {
+    isOpen,
+    handleIsOpen,
+  });
 </script>
