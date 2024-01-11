@@ -7,6 +7,9 @@ export default defineEventHandler(async (event) => {
     include: {
       author: true,
     },
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   return posts;

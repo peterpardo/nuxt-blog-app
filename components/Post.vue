@@ -8,7 +8,9 @@
 
         <div>
           <h1>{{ props.post.author.name }}</h1>
-          <p class="text-gray-400 text-xs">1 hr ago</p>
+          <p class="text-gray-400 text-xs">
+            {{ formatCreatedAt(props.post.createdAt) }}
+          </p>
         </div>
       </div>
     </template>
@@ -19,6 +21,14 @@
 
 <script setup lang="ts">
   import type { PostWithUser } from "~/types";
+  import dayjs from "dayjs";
+  import relativeTime from "dayjs/plugin/relativeTime";
+  dayjs.extend(relativeTime);
+
+  const formatCreatedAt = (createdAt: Date) => {
+    return dayjs().to(dayjs(createdAt));
+  };
+
   const props = defineProps<{
     post: PostWithUser;
   }>();
