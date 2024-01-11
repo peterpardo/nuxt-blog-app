@@ -17,7 +17,7 @@
       <UFormGroup class="my-2">
         <template #label>
           <div
-            class="flex flex-col justify-center items-center gap-x-2 cursor-pointer hover:bg-gray-100 px-2 py-1 rounded w-20 h-20">
+            class="flex flex-col justify-center items-center gap-x-2 bg-gray-100 cursor-pointer hover:bg-gray-200 px-2 py-1 rounded w-20 h-20">
             <UIcon
               name="i-ic-baseline-plus"
               dynamic />
@@ -88,6 +88,7 @@
   const createPost = () => {
     post.value = "";
     handleIsOpen(false);
+    filesDisplay.value = null;
     toast.add({ title: "Post created." });
   };
 
