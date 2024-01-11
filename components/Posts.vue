@@ -1,5 +1,16 @@
 <template>
   <div class="mt-2 space-y-5">
+    <div class="flex items-center justify-end">
+      <UDropdown
+        :items="items"
+        :popper="{ placement: 'bottom-end' }">
+        <UButton
+          color="white"
+          :label="filterLabel"
+          trailing-icon="i-heroicons-chevron-down-20-solid" />
+      </UDropdown>
+    </div>
+
     <PostSkeleton v-if="postStore.loading" />
 
     <template v-else>
@@ -30,6 +41,26 @@
 
 <script setup lang="ts">
   const postStore = usePostStore();
+  const filterLabel = ref("All Posts");
 
   postStore.fetchPosts();
+
+  const items = [
+    [
+      {
+        label: "All Posts",
+        click: () => {
+          filterLabel.value = "All Posts";
+          postStore.fetchPosts();
+        },
+      },
+      {
+        label: "My Posts",
+        click: () => {
+          filterLabel.value = "My Posts";
+          postStore.fetchPosts(true);
+        },
+      },
+    ],
+  ];
 </script>

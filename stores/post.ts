@@ -4,7 +4,6 @@ import posts from "~/data/posts.json";
 type PostState = {
   list: PostWithUser[] | null;
   currentPost: Post | null;
-  filterPosts: boolean;
   loading?: boolean;
 };
 
@@ -12,15 +11,14 @@ export const usePostStore = defineStore("post", {
   state: (): PostState => ({
     list: [],
     currentPost: null,
-    filterPosts: false,
     loading: false,
   }),
   actions: {
-    async fetchPosts() {
+    async fetchPosts(filterPosts: boolean = false) {
       this.loading = true;
 
       const { data, error } = await useFetch<PostWithUser[]>(`/api/get-posts`, {
-        query: { filterPosts: this.filterPosts },
+        query: { filterPosts: filterPosts },
       });
 
       if (error.value) {
