@@ -1,6 +1,8 @@
 <template>
-  <UModal v-model="isOpen">
-    <UCard>
+  <UModal
+    v-model="isOpen"
+    :prevent-close="isLoading">
+    <UCard :ui="{ base: 'relative' }">
       <template #header>
         <h1 class="text-xl text-primary font-semibold">Create Post</h1>
       </template>
@@ -54,6 +56,19 @@
         </div>
       </div>
 
+      <div
+        v-if="isLoading"
+        class="absolute inset-0 grid place-content-center bg-white bg-opacity-50 \">
+        <div class="flex items-center gap-x-2">
+          <UIcon
+            name="i-heroicons-arrow-path-16-solid"
+            dynamic
+            class="animate-spin" />
+
+          Creating post...
+        </div>
+      </div>
+
       <template #footer>
         <div class="flex">
           <UButton
@@ -75,13 +90,15 @@
   import { v4 as uuidv4 } from "uuid";
 
   const userStore = useUserStore();
+  const client = useSupabaseClient();
 
   const post = ref("");
   const toast = useToast();
   const files = ref(null);
   const filesData = ref<File[] | null>([]);
   const errorMessage = ref<string | undefined>("");
-  const filesDisplay = ref<string[] | null>(null);
+  const filesDisplay = ref<string[] | null>([]);
+  const isLoading = ref(false);
   const { isOpen, handleIsOpen } = inject(ModalKey) as Modal;
 
   const isPostValid = computed(() => post.value.length < 100);
@@ -106,8 +123,8 @@
 
   function clearData() {
     post.value = "";
-    filesDisplay.value = null;
-    filesData.value = null;
+    filesDisplay.value = [];
+    filesData.value = [];
     errorMessage.value = undefined;
   }
 
@@ -115,6 +132,24 @@
     if (post.value === "") {
       errorMessage.value = "Post must not be empty";
       return;
+    }
+
+    isLoading.value = true;
+
+    if (filesData.value) {
+      for (let i = 0; i <= filesData.value.length - 1; i++) {
+        const fileExtension = filesData.value[0].name.split(".").pop();
+
+        const { data, error } = await client.storage
+          .from("nuxt-blog-app-storage")
+          .upload(`${uuidv4()}.${fileExtension}`, filesData.value[0]);
+
+        if (error) {
+          console.log(error.message);
+        } else {
+          console.log(data);
+        }
+      }
     }
 
     const { error } = await useFetch("/api/create-post", {
@@ -133,6 +168,7 @@
 
     handleIsOpen(false);
     clearData();
+    isLoading.value = false;
   };
 
   const onChange = (event: Event) => {
@@ -144,14 +180,14 @@
         return;
       }
 
-      let previewImages: string[] = [];
-      let previewFilesData: File[] = [];
+      let previewImages = filesDisplay.value;
+      let previewFilesData = filesData.value;
       let fileSize = 0;
 
       for (let i = 0; i <= el.files.length - 1; i++) {
         fileSize += el.files[i].size / 1024 ** 2;
-        previewFilesData.push(el.files[i]);
-        previewImages.push(URL.createObjectURL(el.files[i]));
+        previewFilesData?.push(el.files[i]);
+        previewImages?.push(URL.createObjectURL(el.files[i]));
       }
 
       // Show alert if file size is greater than 2mb
