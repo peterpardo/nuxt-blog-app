@@ -4,7 +4,7 @@
     <div class="flex items-center gap-x-2">
       <TheLogo @click="scrollToTop" />
       <UButton
-        v-if="user"
+        v-if="userStore.id"
         @click="isOpen = !isOpen"
         >Create Post</UButton
       >
@@ -12,7 +12,7 @@
     <div>
       <div class="flex items-center">
         <UButton
-          v-if="!user"
+          v-if="!userStore.id"
           variant="ghost"
           to="/login"
           >Login</UButton
@@ -30,8 +30,8 @@
             </div>
           </template>
           <UAvatar
-            :src="user?.user_metadata.avatar_url"
-            :alt="user?.user_metadata.user_name"
+            :src="userStore.avatar"
+            :alt="userStore.name"
             size="md"
             class="cursor-pointer" />
         </UDropdown>
@@ -47,13 +47,14 @@
   import { ModalKey } from "~/symbols";
 
   const user = ref<User | null>(null);
+  const userStore = useUserStore();
   const supabase = useSupabaseClient();
   const isOpen = ref(false);
 
   const items = [
     [
       {
-        label: user?.value?.email as string,
+        label: userStore.email as string,
         slot: "account",
         disabled: true,
       },
@@ -62,15 +63,15 @@
       {
         label: "Sign out",
         icon: "i-heroicons-arrow-left-on-rectangle",
-        click: signOut,
+        click: userStore.signOutUser,
       },
     ],
   ];
 
-  onMounted(() => {
-    const currentUser = useSupabaseUser();
-    user.value = currentUser.value;
-  });
+  // onMounted(() => {
+  //   const currentUser = useSupabaseUser();
+  //   user.value = currentUser.value;
+  // });
 
   const handleIsOpen = (value: boolean) => {
     isOpen.value = value;
@@ -80,11 +81,11 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  async function signOut() {
-    const { error } = await supabase.auth.signOut();
-    user.value = null;
-    if (error) console.log(error);
-  }
+  // async function signOut() {
+  //   const { error } = await supabase.auth.signOut();
+  //   user.value = null;
+  //   if (error) console.log(error);
+  // }
 
   provide(ModalKey, {
     isOpen,

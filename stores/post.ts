@@ -16,5 +16,6 @@ export const usePostStore = defineStore("post", {
       this.list = posts;
       this.loading = false;
     },
+    async createPost() {},
   },
 });

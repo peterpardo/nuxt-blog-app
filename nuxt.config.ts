@@ -10,4 +10,5 @@ export default defineNuxtConfig({
       apiBase: "http://localhost:3000",
     },
   },
+  ssr: false,
 });
