@@ -3,11 +3,11 @@
     <template #header>
       <div class="flex items-center gap-x-4">
         <UAvatar
-          :src="props.post.user.profilePicture"
-          :alt="props.post.user.name" />
+          :src="props.post.author.avatar"
+          :alt="props.post.author.name" />
 
         <div>
-          <h1>{{ props.post.user.name }}</h1>
+          <h1>{{ props.post.author.name }}</h1>
           <p class="text-gray-400 text-xs">1 hr ago</p>
         </div>
       </div>
@@ -18,8 +18,8 @@
 </template>
 
 <script setup lang="ts">
-  import type { Post } from "~/types";
+  import type { PostWithUser } from "~/types";
   const props = defineProps<{
-    post: Post;
+    post: PostWithUser;
   }>();
 </script>

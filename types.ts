@@ -1,14 +1,20 @@
+import { Prisma } from "@prisma/client";
 import type { Ref } from "vue";
+
+const postWithUser = Prisma.validator<Prisma.PostDefaultArgs>()({
+  include: { author: true },
+});
+
+export type PostWithUser = Prisma.PostGetPayload<typeof postWithUser>;
 
 export type Post = {
   id: number;
-  user: {
-    id?: number;
-    name?: string;
-    profilePicture?: string;
-  };
   content: string;
-  images: string[];
+  updatedAt: string;
+  createdAt: string;
+  images?: string[];
+  authorId: number;
+  author: User;
 };
 
 export type Modal = {

@@ -1,8 +1,8 @@
-import type { Post } from "~/types";
+import type { Post, PostWithUser } from "~/types";
 import posts from "~/data/posts.json";
 
 type PostState = {
-  list: Post[];
+  list: PostWithUser[] | null;
   currentPost: Post | null;
   loading?: boolean;
 };
@@ -12,8 +12,15 @@ export const usePostStore = defineStore("post", {
   actions: {
     async fetchPosts() {
       this.loading = true;
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      this.list = posts;
+
+      const { data, error } = await useFetch<PostWithUser[]>(`/api/get-posts`);
+
+      if (error.value) {
+        console.log(error.value);
+      } else {
+        this.list = data.value;
+      }
+
       this.loading = false;
     },
     async createPost() {},
