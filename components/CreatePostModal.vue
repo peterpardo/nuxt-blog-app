@@ -47,7 +47,7 @@
             :src="fileDisplay"
             class="w-full" />
           <div
-            @click="deleteFile(fileDisplay)"
+            @click="deleteFile(i)"
             class="absolute inset-0 justify-center flex items-center bg-gray-50 bg-opacity-50 opacity-0 w-full h-full hover:opacity-100 cursor-pointer">
             <p class="text-red-500 bg-white rounded px-2 py-1">Delete</p>
           </div>
@@ -72,12 +72,14 @@
 <script setup lang="ts">
   import type { Modal } from "~/types";
   import { ModalKey } from "~/symbols";
+  import { v4 as uuidv4 } from "uuid";
 
   const userStore = useUserStore();
 
   const post = ref("");
   const toast = useToast();
   const files = ref(null);
+  const filesData = ref<File[] | null>([]);
   const errorMessage = ref<string | undefined>("");
   const filesDisplay = ref<string[] | null>(null);
   const { isOpen, handleIsOpen } = inject(ModalKey) as Modal;
@@ -95,6 +97,19 @@
       errorMessage.value = undefined;
     }
   });
+
+  watch(isOpen, () => {
+    if (!isOpen.value) {
+      clearData();
+    }
+  });
+
+  function clearData() {
+    post.value = "";
+    filesDisplay.value = null;
+    filesData.value = null;
+    errorMessage.value = undefined;
+  }
 
   const createPost = async () => {
     if (post.value === "") {
@@ -116,9 +131,8 @@
       toast.add({ title: "Post created." });
     }
 
-    post.value = "";
     handleIsOpen(false);
-    filesDisplay.value = null;
+    clearData();
   };
 
   const onChange = (event: Event) => {
@@ -130,10 +144,13 @@
         return;
       }
 
-      let previewImages = [];
+      let previewImages: string[] = [];
+      let previewFilesData: File[] = [];
       let fileSize = 0;
+
       for (let i = 0; i <= el.files.length - 1; i++) {
         fileSize += el.files[i].size / 1024 ** 2;
+        previewFilesData.push(el.files[i]);
         previewImages.push(URL.createObjectURL(el.files[i]));
       }
 
@@ -143,13 +160,18 @@
         return;
       }
 
+      filesData.value = previewFilesData;
       filesDisplay.value = previewImages;
     }
   };
 
-  const deleteFile = (file: string) => {
-    filesDisplay.value = filesDisplay.value?.filter(
-      (filesDisplay) => filesDisplay !== file
-    ) as string[];
+  const deleteFile = (fileIndex: number) => {
+    filesDisplay.value = filesDisplay.value?.filter((file, i) => {
+      return i !== fileIndex;
+    }) as string[];
+
+    filesData.value = filesData.value?.filter((file, i) => {
+      return i !== fileIndex;
+    }) as File[];
   };
 </script>
