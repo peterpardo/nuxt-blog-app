@@ -6,8 +6,8 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const posts = await prisma.post.create({
     data: {
-      content: "First Content",
-      authorId: 1,
+      content: body.content,
+      authorId: body.authorId,
     },
   });
 

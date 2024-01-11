@@ -73,23 +73,52 @@
   import type { Modal } from "~/types";
   import { ModalKey } from "~/symbols";
 
+  const userStore = useUserStore();
+
   const post = ref("");
   const toast = useToast();
   const files = ref(null);
+  const errorMessage = ref<string | undefined>("");
   const filesDisplay = ref<string[] | null>(null);
   const { isOpen, handleIsOpen } = inject(ModalKey) as Modal;
 
-  const isPostValid = computed(() => post.value.length < 20);
+  const isPostValid = computed(() => post.value.length < 100);
 
-  const errorMessage = computed(
-    () => !isPostValid.value && "Post must be 100 characters below."
-  );
+  watchEffect(() => {
+    if (!isPostValid.value) {
+      errorMessage.value = "Post must be 100 characters below.";
+    }
+  });
 
-  const createPost = () => {
+  watch(post, () => {
+    if (post.value !== "") {
+      errorMessage.value = undefined;
+    }
+  });
+
+  const createPost = async () => {
+    if (post.value === "") {
+      errorMessage.value = "Post must not be empty";
+      return;
+    }
+
+    const { error } = await useFetch("/api/create-post", {
+      method: "POST",
+      body: {
+        content: post.value,
+        authorId: userStore.id,
+      },
+    });
+
+    if (error.value) {
+      toast.add({ title: "An error occurred. Please try again." });
+    } else {
+      toast.add({ title: "Post created." });
+    }
+
     post.value = "";
     handleIsOpen(false);
     filesDisplay.value = null;
-    toast.add({ title: "Post created." });
   };
 
   const onChange = (event: Event) => {
