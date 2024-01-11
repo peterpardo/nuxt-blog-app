@@ -23,9 +23,9 @@
           :ui="{ item: { disabled: 'cursor-text select-text' } }">
           <template #account="{ item }">
             <div class="text-left">
-              <p>Signed in as</p>
+              <p>{{ item.label }}</p>
               <p class="truncate font-medium text-gray-900 dark:text-white">
-                {{ item.label }}
+                {{ userStore.email }}
               </p>
             </div>
           </template>
@@ -43,18 +43,15 @@
 </template>
 
 <script setup lang="ts">
-  import type { User } from "@supabase/supabase-js";
   import { ModalKey } from "~/symbols";
 
-  const user = ref<User | null>(null);
   const userStore = useUserStore();
-  const supabase = useSupabaseClient();
   const isOpen = ref(false);
 
   const items = [
     [
       {
-        label: userStore.email as string,
+        label: "Signed in as",
         slot: "account",
         disabled: true,
       },
@@ -68,11 +65,6 @@
     ],
   ];
 
-  // onMounted(() => {
-  //   const currentUser = useSupabaseUser();
-  //   user.value = currentUser.value;
-  // });
-
   const handleIsOpen = (value: boolean) => {
     isOpen.value = value;
   };
@@ -80,12 +72,6 @@
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  // async function signOut() {
-  //   const { error } = await supabase.auth.signOut();
-  //   user.value = null;
-  //   if (error) console.log(error);
-  // }
 
   provide(ModalKey, {
     isOpen,
