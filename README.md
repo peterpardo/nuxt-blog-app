@@ -21,8 +21,8 @@ I want to learn how to use **Pinia** for state management and **Supabase** for s
 - [x] - Connect Supabase to frontend. Get API keys neeed when creating the server
 - [ ] - Setup APIs
     - [ ] - Get Post
-    - [ ] - Get All Posts
-    - [x] - Create Post
+    - [x] - Get All Posts
+    - [ ] - Create Post
     - [ ] - Update Post
     - [ ] - Delete Post
     - [ ] - Get User

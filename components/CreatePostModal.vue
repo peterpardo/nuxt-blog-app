@@ -1,7 +1,7 @@
 <template>
   <UModal
     v-model="isOpen"
-    :prevent-close="isLoading">
+    :prevent-close="postStore.loading">
     <UCard :ui="{ base: 'relative' }">
       <template #header>
         <h1 class="text-xl text-primary font-semibold">Create Post</h1>
@@ -57,7 +57,7 @@
       </div>
 
       <div
-        v-if="isLoading"
+        v-if="postStore.loading"
         class="absolute inset-0 grid place-content-center bg-white bg-opacity-50 \">
         <div class="flex items-center gap-x-2">
           <UIcon
@@ -90,6 +90,7 @@
   import { v4 as uuidv4 } from "uuid";
 
   const userStore = useUserStore();
+  const postStore = usePostStore();
   const client = useSupabaseClient();
 
   const post = ref("");
@@ -134,31 +135,7 @@
       return;
     }
 
-    isLoading.value = true;
-
-    if (filesData.value) {
-      for (let i = 0; i <= filesData.value.length - 1; i++) {
-        const fileExtension = filesData.value[0].name.split(".").pop();
-
-        const { data, error } = await client.storage
-          .from("nuxt-blog-app-storage")
-          .upload(`${uuidv4()}.${fileExtension}`, filesData.value[0]);
-
-        if (error) {
-          console.log(error.message);
-        } else {
-          console.log(data);
-        }
-      }
-    }
-
-    const { error } = await useFetch("/api/create-post", {
-      method: "POST",
-      body: {
-        content: post.value,
-        authorId: userStore.id,
-      },
-    });
+    const { error } = await postStore.createPost(post.value, filesData.value);
 
     if (error.value) {
       toast.add({ title: "An error occurred. Please try again." });
@@ -168,7 +145,6 @@
 
     handleIsOpen(false);
     clearData();
-    isLoading.value = false;
   };
 
   const onChange = (event: Event) => {
