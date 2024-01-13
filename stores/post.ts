@@ -34,6 +34,7 @@ export const usePostStore = defineStore("post", {
 
       const client = useSupabaseClient();
       const userStore = useUserStore();
+      let imageFiles = [];
 
       if (filesData) {
         for (let i = 0; i <= filesData.length - 1; i++) {
@@ -47,6 +48,7 @@ export const usePostStore = defineStore("post", {
             console.log(error.message);
           } else {
             console.log(data);
+            imageFiles.push(data);
           }
         }
       }
@@ -56,6 +58,7 @@ export const usePostStore = defineStore("post", {
         body: {
           content: post,
           authorId: userStore.id,
+          images: imageFiles,
         },
       });
 

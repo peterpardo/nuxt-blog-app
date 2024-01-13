@@ -30,8 +30,9 @@ model Post {
 }
 
 model Image {
-  id     Int    @id @default(autoincrement())
-  name   String
-  post   Post   @relation(fields: [postId], references: [id])
-  postId Int
+  id      Int    @id @default(autoincrement())
+  imageId String
+  name    String
+  post    Post   @relation(fields: [postId], references: [id])
+  postId  Int
 }
