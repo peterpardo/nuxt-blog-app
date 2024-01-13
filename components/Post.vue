@@ -16,6 +16,16 @@
     </template>
 
     {{ props.post.content }}
+
+    <div class="flex items-center justify-between">
+      <img
+        v-for="image in props.post.images"
+        :key="image.id"
+        :src="`${config.public.bucketUrl}/${image.name}`"
+        alt="image"
+        class="w-40"
+        loading="lazy" />
+    </div>
   </UCard>
 </template>
 
@@ -24,6 +34,8 @@
   import dayjs from "dayjs";
   import relativeTime from "dayjs/plugin/relativeTime";
   dayjs.extend(relativeTime);
+
+  const config = useRuntimeConfig();
 
   const formatCreatedAt = (createdAt: Date) => {
     return dayjs().to(dayjs(createdAt));

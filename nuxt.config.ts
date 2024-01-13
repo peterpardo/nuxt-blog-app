@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: "http://localhost:3000",
+      bucketUrl: process.env.BUCKET_URL,
     },
   },
   ssr: false,

@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import type { Ref } from "vue";
 
 const postWithUser = Prisma.validator<Prisma.PostDefaultArgs>()({
-  include: { author: true },
+  include: { author: true, images: true },
 });
 
 export type PostWithUser = Prisma.PostGetPayload<typeof postWithUser>;

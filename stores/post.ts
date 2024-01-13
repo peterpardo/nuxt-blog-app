@@ -38,11 +38,11 @@ export const usePostStore = defineStore("post", {
 
       if (filesData) {
         for (let i = 0; i <= filesData.length - 1; i++) {
-          const fileExtension = filesData[0].name.split(".").pop();
+          const fileExtension = filesData[i].name.split(".").pop();
 
           const { data, error } = await client.storage
             .from("nuxt-blog-app-storage")
-            .upload(`${uuidv4()}.${fileExtension}`, filesData[0]);
+            .upload(`${uuidv4()}.${fileExtension}`, filesData[i]);
 
           if (error) {
             console.log(error.message);
