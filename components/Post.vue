@@ -30,7 +30,7 @@
           <template #item="{ item }">
             <div
               class="flex w-full items-center justify-between"
-              @click="$emit('handle-post', props.post.id, item.label)">
+              @click="$emit('handle-post', props.post, item.label)">
               <span>{{ item.label }}</span>
 
               <UIcon

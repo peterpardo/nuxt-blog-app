@@ -44,9 +44,10 @@
 
 <script setup lang="ts">
   import { ModalKey } from "~/symbols";
+  import type { Modal } from "~/types";
 
   const userStore = useUserStore();
-  const isOpen = ref(false);
+  const { isOpen } = inject(ModalKey) as Modal;
 
   const items = [
     [
@@ -65,16 +66,7 @@
     ],
   ];
 
-  const handleIsOpen = (value: boolean) => {
-    isOpen.value = value;
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  provide(ModalKey, {
-    isOpen,
-    handleIsOpen,
-  });
 </script>

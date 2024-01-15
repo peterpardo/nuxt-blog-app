@@ -46,6 +46,8 @@
 </template>
 
 <script setup lang="ts">
+  import type { Post } from "~/types";
+
   const postStore = usePostStore();
   const filterLabel = ref("All Posts");
   const isOpen = ref(false);
@@ -77,13 +79,18 @@
     isOpen.value = false;
   }
 
-  function handlePost(postId: number, label: string) {
+  function handlePost(currPost: Post, label: string) {
     if (label === "Delete") {
-      console.log("Delete Post: ", postId);
+      console.log("Delete Post: ", currPost.id);
       isOpen.value = true;
     } else {
-      console.log("Edit Post: ", postId);
+      postStore.currentPost = {
+        id: currPost.id,
+        content: currPost.content,
+        images: currPost.images,
+      };
+      console.log("Edit Post: ", currPost.id);
     }
-    selectedPost.value = postId;
+    selectedPost.value = currPost.id;
   }
 </script>
