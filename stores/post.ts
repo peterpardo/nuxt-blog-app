@@ -68,5 +68,20 @@ export const usePostStore = defineStore("post", {
 
       return { error };
     },
+    async deletePost(postId: number | null) {
+      this.loading = true;
+
+      const { data, error } = await useFetch(`/api/delete-post/${postId}`, {
+        method: "DELETE",
+      });
+
+      this.list = this.list?.filter(
+        (post) => post.id !== postId
+      ) as PostWithUser[];
+
+      this.loading = false;
+
+      return { data, error };
+    },
   },
 });

@@ -7,6 +7,19 @@
 
       Are you sure you want to delete this post?
 
+      <div
+        v-if="postStore.loading"
+        class="absolute inset-0 grid place-content-center bg-white bg-opacity-50 \">
+        <div class="flex items-center gap-x-2">
+          <UIcon
+            name="i-heroicons-arrow-path-16-solid"
+            dynamic
+            class="animate-spin" />
+
+          Deleting post...
+        </div>
+      </div>
+
       <template #footer>
         <div class="flex">
           <UButton
@@ -28,6 +41,7 @@
   }>();
   const emit = defineEmits(["close-modal"]);
 
+  const postStore = usePostStore();
   const toast = useToast();
   const isOpen = ref(props.isOpen);
 
@@ -44,9 +58,15 @@
     }
   });
 
-  function deletePost() {
-    console.log("Confirm deleting post: ", props.selectedPost);
+  async function deletePost() {
+    const { error } = await postStore.deletePost(props.selectedPost);
+
+    if (error.value) {
+      toast.add({ title: error.value.message });
+    } else {
+      toast.add({ title: "Post deleted." });
+    }
+
     isOpen.value = false;
-    toast.add({ title: "Post deleted." });
   }
 </script>
