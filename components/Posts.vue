@@ -46,12 +46,14 @@
 </template>
 
 <script setup lang="ts">
-  import type { Post } from "~/types";
+  import { ModalKey } from "~/symbols";
+  import type { Modal, Post } from "~/types";
 
   const postStore = usePostStore();
   const filterLabel = ref("All Posts");
   const isOpen = ref(false);
   const selectedPost = ref<number | null>(null);
+  const { handleIsOpen } = inject(ModalKey) as Modal;
 
   postStore.fetchPosts();
 
@@ -81,7 +83,6 @@
 
   function handlePost(currPost: Post, label: string) {
     if (label === "Delete") {
-      console.log("Delete Post: ", currPost.id);
       isOpen.value = true;
     } else {
       postStore.currentPost = {
@@ -89,7 +90,8 @@
         content: currPost.content,
         images: currPost.images,
       };
-      console.log("Edit Post: ", currPost.id);
+      handleIsOpen(true);
+      postStore.config = "EDIT";
     }
     selectedPost.value = currPost.id;
   }

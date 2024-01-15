@@ -107,6 +107,13 @@
     }
   });
 
+  watch(
+    () => postStore.currentPost,
+    (newValue) => {
+      post.value = (newValue?.content ?? "") as string;
+    }
+  );
+
   watch(isOpen, () => {
     if (!isOpen.value) {
       clearData();
@@ -118,6 +125,8 @@
     filesDisplay.value = [];
     filesData.value = [];
     errorMessage.value = undefined;
+
+    postStore.currentPost = null;
   }
 
   const createPost = async () => {

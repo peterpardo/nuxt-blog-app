@@ -5,6 +5,7 @@ type PostState = {
   list: PostWithUser[] | null;
   currentPost: Post | null;
   loading?: boolean;
+  config: "EDIT" | "CREATE";
 };
 
 export const usePostStore = defineStore("post", {
@@ -12,6 +13,7 @@ export const usePostStore = defineStore("post", {
     list: [],
     currentPost: null,
     loading: false,
+    config: "CREATE",
   }),
   actions: {
     async fetchPosts(filterPosts: boolean = false) {
