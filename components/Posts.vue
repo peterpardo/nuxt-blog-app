@@ -33,15 +33,23 @@
         <Post
           v-for="post in postStore.list"
           :post="post"
-          :key="post.id" />
+          :key="post.id"
+          @handle-post="handlePost" />
       </template>
     </template>
   </div>
+
+  <DeletePostModal
+    :is-open="isOpen"
+    @close-modal="closeDeleteModal"
+    :selected-post="selectedPost" />
 </template>
 
 <script setup lang="ts">
   const postStore = usePostStore();
   const filterLabel = ref("All Posts");
+  const isOpen = ref(false);
+  const selectedPost = ref<number | null>(null);
 
   postStore.fetchPosts();
 
@@ -63,4 +71,19 @@
       },
     ],
   ];
+
+  function closeDeleteModal() {
+    selectedPost.value = null;
+    isOpen.value = false;
+  }
+
+  function handlePost(postId: number, label: string) {
+    if (label === "Delete") {
+      console.log("Delete Post: ", postId);
+      isOpen.value = true;
+    } else {
+      console.log("Edit Post: ", postId);
+    }
+    selectedPost.value = postId;
+  }
 </script>

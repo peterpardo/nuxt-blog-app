@@ -30,7 +30,7 @@
           <template #item="{ item }">
             <div
               class="flex w-full items-center justify-between"
-              @click="handlePost(props.post.id, item.label)">
+              @click="$emit('handle-post', props.post.id, item.label)">
               <span>{{ item.label }}</span>
 
               <UIcon
@@ -64,6 +64,7 @@
 
   const userStore = useUserStore();
   const config = useRuntimeConfig();
+  defineEmits(["handle-post"]);
 
   const items = [
     [
@@ -85,12 +86,4 @@
   const props = defineProps<{
     post: PostWithUser;
   }>();
-
-  function handlePost(postId: number, label: string) {
-    if (label === "Delete") {
-      console.log("Delete Post: ", postId);
-    } else {
-      console.log("Edit Post: ", postId);
-    }
-  }
 </script>
