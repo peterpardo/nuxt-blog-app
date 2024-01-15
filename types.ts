@@ -12,7 +12,7 @@ export type Post = {
   content: string;
   updatedAt?: string;
   createdAt?: string;
-  images?: string[] | Image;
+  images?: Image[];
   authorId?: number;
   author?: User;
 };

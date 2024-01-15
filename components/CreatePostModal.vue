@@ -91,11 +91,12 @@
   const postStore = usePostStore();
   const post = ref("");
   const toast = useToast();
-  const files = ref(null);
+  const files = ref(null); // reference to the input element
   const filesData = ref<File[] | null>([]);
   const errorMessage = ref<string | undefined>("");
   const filesDisplay = ref<string[] | null>([]);
   const { isOpen, handleIsOpen } = inject(ModalKey) as Modal;
+  const config = useRuntimeConfig();
 
   const isPostValid = computed(() => post.value.length < 100);
 
@@ -109,8 +110,12 @@
 
   watch(
     () => postStore.currentPost,
-    (newValue) => {
-      post.value = (newValue?.content ?? "") as string;
+    (currenPost) => {
+      post.value = (currenPost?.content ?? "") as string;
+      filesDisplay.value =
+        currenPost?.images?.map(
+          (img) => `${config.public.bucketUrl}/${img.name}`
+        ) ?? [];
     }
   );
 
