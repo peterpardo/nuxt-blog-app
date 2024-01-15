@@ -87,19 +87,14 @@
 <script setup lang="ts">
   import type { Modal } from "~/types";
   import { ModalKey } from "~/symbols";
-  import { v4 as uuidv4 } from "uuid";
 
-  const userStore = useUserStore();
   const postStore = usePostStore();
-  const client = useSupabaseClient();
-
   const post = ref("");
   const toast = useToast();
   const files = ref(null);
   const filesData = ref<File[] | null>([]);
   const errorMessage = ref<string | undefined>("");
   const filesDisplay = ref<string[] | null>([]);
-  const isLoading = ref(false);
   const { isOpen, handleIsOpen } = inject(ModalKey) as Modal;
 
   const isPostValid = computed(() => post.value.length < 100);
@@ -107,11 +102,7 @@
   watchEffect(() => {
     if (!isPostValid.value) {
       errorMessage.value = "Post must be 100 characters below.";
-    }
-  });
-
-  watch(post, () => {
-    if (post.value !== "") {
+    } else {
       errorMessage.value = undefined;
     }
   });
