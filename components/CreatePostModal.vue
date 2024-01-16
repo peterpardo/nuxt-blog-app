@@ -46,10 +46,10 @@
           :key="i"
           class="relative grid place-content-center">
           <img
-            :src="fileDisplay"
+            :src="fileDisplay.name"
             class="w-full" />
           <div
-            @click="deleteFile(i)"
+            @click="deleteFile(i, fileDisplay.id)"
             class="absolute inset-0 justify-center flex items-center bg-gray-50 bg-opacity-50 opacity-0 w-full h-full hover:opacity-100 cursor-pointer">
             <p class="text-red-500 bg-white rounded px-2 py-1">Delete</p>
           </div>
@@ -87,6 +87,9 @@
 <script setup lang="ts">
   import type { Modal } from "~/types";
   import { ModalKey } from "~/symbols";
+  import { v4 as uuidv4 } from "uuid";
+
+  type FileDisplay = { id: string | number; name: string };
 
   const postStore = usePostStore();
   const post = ref("");
@@ -94,7 +97,7 @@
   const files = ref(null); // reference to the input element
   const filesData = ref<File[] | null>([]);
   const errorMessage = ref<string | undefined>("");
-  const filesDisplay = ref<string[] | null>([]);
+  const filesDisplay = ref<FileDisplay[] | null>([]);
   const { isOpen, handleIsOpen } = inject(ModalKey) as Modal;
   const config = useRuntimeConfig();
 
@@ -113,9 +116,10 @@
     (currenPost) => {
       post.value = (currenPost?.content ?? "") as string;
       filesDisplay.value =
-        currenPost?.images?.map(
-          (img) => `${config.public.bucketUrl}/${img.name}`
-        ) ?? [];
+        currenPost?.images?.map((img) => ({
+          id: img.id,
+          name: `${config.public.bucketUrl}/${img.name}`,
+        })) ?? [];
     }
   );
 
@@ -156,7 +160,7 @@
     const el = event.target as HTMLInputElement & EventTarget;
     if (el.files) {
       // Limit file upload to three files only
-      if ((filesDisplay.value as string[])?.length + el.files.length > 3) {
+      if ((filesDisplay.value as FileDisplay[])?.length + el.files.length > 3) {
         alert("Only upload three files");
         return;
       }
@@ -168,7 +172,10 @@
       for (let i = 0; i <= el.files.length - 1; i++) {
         fileSize += el.files[i].size / 1024 ** 2;
         previewFilesData?.push(el.files[i]);
-        previewImages?.push(URL.createObjectURL(el.files[i]));
+        previewImages?.push({
+          id: uuidv4(),
+          name: URL.createObjectURL(el.files[i]),
+        });
       }
 
       // Show alert if file size is greater than 2mb
@@ -182,10 +189,10 @@
     }
   };
 
-  const deleteFile = (fileIndex: number) => {
-    filesDisplay.value = filesDisplay.value?.filter((file, i) => {
-      return i !== fileIndex;
-    }) as string[];
+  const deleteFile = (fileIndex: number, fileId: string | number) => {
+    filesDisplay.value = filesDisplay.value?.filter((file) => {
+      return file.id !== fileId;
+    }) as FileDisplay[];
 
     filesData.value = filesData.value?.filter((file, i) => {
       return i !== fileIndex;
