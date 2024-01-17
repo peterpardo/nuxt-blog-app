@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-2 space-y-5">
+  <div class="pt-2 pb-4 space-y-5">
     <div class="flex items-center justify-end">
       <UDropdown
         :items="items"
