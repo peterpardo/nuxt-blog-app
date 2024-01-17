@@ -138,6 +138,7 @@
     errorMessage.value = undefined;
 
     postStore.currentPost = null;
+    postStore.config = "CREATE";
   }
 
   const createPost = async () => {
