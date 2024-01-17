@@ -37,7 +37,7 @@
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "https://nuxt-blog-app-psi.vercel.app",
+        redirectTo: config.public.apiBase,
       },
     });
     if (error) console.log(error);
