@@ -188,14 +188,14 @@
         return;
       }
 
-      let previewImages = filesDisplay.value;
-      let previewFilesData = filesData.value;
+      let previewImages = JSON.parse(JSON.stringify(filesDisplay.value));
+      let previewFilesData = JSON.parse(JSON.stringify(filesData.value));
       let fileSize = 0;
 
       for (let i = 0; i <= el.files.length - 1; i++) {
         fileSize += el.files[i].size / 1024 ** 2;
         previewFilesData?.push(el.files[i]);
-        previewImages?.push({
+        previewImages?.value?.push({
           id: uuidv4(),
           name: URL.createObjectURL(el.files[i]),
         });
@@ -204,11 +204,10 @@
       // Show alert if file size is greater than 2mb
       if (fileSize > 2) {
         alert("Total file size must be less than 2mb only");
-        return;
+      } else {
+        filesData.value = previewFilesData;
+        filesDisplay.value = previewImages;
       }
-
-      filesData.value = previewFilesData;
-      filesDisplay.value = previewImages;
     }
   };
 

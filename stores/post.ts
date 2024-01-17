@@ -49,7 +49,6 @@ export const usePostStore = defineStore("post", {
           if (error) {
             console.log(error.message);
           } else {
-            console.log(data);
             imageFiles.push(data);
           }
         }
