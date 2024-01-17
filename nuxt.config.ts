@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: "",
+      apiBase: "https://nuxt-blog-app-psi.vercel.app",
       bucketUrl: process.env.BUCKET_URL,
     },
   },
