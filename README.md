@@ -17,3 +17,6 @@ I want to learn how to use **Pinia** for state management and **Supabase** for s
 - Pinia - Vue.js state management
 - NuxtUI - Compenent Library
 
+# Short Demo
+![Untitled design](https://github.com/peterpardo/nuxt-blog-app/assets/57168579/3d273959-5ff4-4503-9880-738bf89350a3)
+
