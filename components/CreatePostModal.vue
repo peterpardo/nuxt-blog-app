@@ -195,7 +195,7 @@
       for (let i = 0; i <= el.files.length - 1; i++) {
         fileSize += el.files[i].size / 1024 ** 2;
         previewFilesData?.push(el.files[i]);
-        previewImages?.value?.push({
+        previewImages?.push({
           id: uuidv4(),
           name: URL.createObjectURL(el.files[i]),
         });
