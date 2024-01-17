@@ -64,8 +64,10 @@
             name="i-heroicons-arrow-path-16-solid"
             dynamic
             class="animate-spin" />
-
-          Creating post...
+          <template v-if="postStore.config === 'CREATE'">
+            Creating post...
+          </template>
+          <template v-else> Editing post... </template>
         </div>
       </div>
 
@@ -144,12 +146,33 @@
       return;
     }
 
-    const { error } = await postStore.createPost(post.value, filesData.value);
+    let error = null;
+    let data = null;
+    let message = "";
+    if (postStore.config === "CREATE") {
+      const { error: createError } = await postStore.createPost(
+        post.value,
+        filesData.value
+      );
+
+      error = createError;
+      message = "Post created.";
+    } else {
+      const { data: editData, error: editError } = await postStore.editPost(
+        post.value,
+        filesData.value,
+        filesDisplay.value
+      );
+
+      error = editError;
+      data = editData;
+      message = "Post edited.";
+    }
 
     if (error.value) {
       toast.add({ title: "An error occurred. Please try again." });
     } else {
-      toast.add({ title: "Post created." });
+      toast.add({ title: message });
     }
 
     handleIsOpen(false);

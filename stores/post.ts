@@ -85,5 +85,77 @@ export const usePostStore = defineStore("post", {
 
       return { data, error };
     },
+    async editPost(
+      post: string,
+      filesData: File[] | null,
+      filesDisplay: { id: string | number; name: string }[] | null
+    ) {
+      this.loading = true;
+
+      const client = useSupabaseClient();
+
+      // compare the origFiles and the filesDisplay
+      // filter the files that are not present in the origFiles
+      const removedFiles = this.currentPost?.images?.filter(
+        (img) => !filesDisplay?.some((file) => file.id === img.id)
+      );
+      const formattedRemovedFiles = removedFiles?.map((file) => file.name);
+
+      // delete the filtered files in supabase storage
+      if (removedFiles && removedFiles.length > 0) {
+        const { data: storageData, error: storageError } = await client.storage
+          .from("nuxt-blog-app-storage")
+          .remove(formattedRemovedFiles as string[]);
+
+        if (storageError) {
+          console.log(storageError.message);
+        }
+      }
+
+      // check if new files are uploaded
+      // upload the new files
+      let imageFiles = [];
+      if (filesData) {
+        for (let i = 0; i <= filesData.length - 1; i++) {
+          const fileExtension = filesData[i].name.split(".").pop();
+
+          const { data, error } = await client.storage
+            .from("nuxt-blog-app-storage")
+            .upload(`${uuidv4()}.${fileExtension}`, filesData[i]);
+
+          if (error) {
+            console.log(error.message);
+          } else {
+            imageFiles.push(data);
+          }
+        }
+      }
+
+      // edit the post
+      // delete the files in the database as well
+      const { data, error } = await useFetch<PostWithUser>(
+        `/api/edit-post/${this.currentPost?.id}`,
+        {
+          method: "PUT",
+          body: {
+            content: post,
+            images: imageFiles,
+            deletedFiles: removedFiles,
+          },
+        }
+      );
+
+      const updatedItemIndex = this.list?.findIndex(
+        (item) => item.id === data.value?.id
+      );
+
+      if (updatedItemIndex !== undefined) {
+        this.list?.splice(updatedItemIndex, 1, data.value as PostWithUser);
+      }
+
+      this.loading = false;
+
+      return { data, error };
+    },
   },
 });
