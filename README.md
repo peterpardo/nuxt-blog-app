@@ -1,6 +1,6 @@
 # Blog App
 
-This is a simple blog app that allows users to create/read/update/delete their posts.
+This is a simple blog app that allows users to create/read/update/delete their posts. **Update:** Already deleted the database for this project. Doing CRUD functionalities will not work for now.
 
 # Requirements
 
